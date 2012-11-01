@@ -39,6 +39,58 @@ NSString *docPath()
         tasks = [[NSMutableArray alloc] init];
     }
     
+ // Create and configure the UIWindow instance
+    // A CGRect is a struct with an origin (x,y) and size (width,height)
+    CGRect windowFrame = [[UIScreen mainScreen] bounds];
+    UIWindow *theWindow = [[UIWindow alloc] initWithFrame:windowFrame];
+    [self setWindow:theWindow];
+
+    // Define the frame rectangles of the three UI elements
+    // CGRectMake() creates a CGRect from (x, y, width, height)
+    CGRect tableFrame = CGRectMake(0, 80, 320, 380);
+    CGRect fieldFrame = CGRectMake(20, 40, 200, 31);
+    CGRect buttonFrame = CGRectMake(228, 40, 72, 31);
+
+    // Create and configure the table view
+    
+ taskTable = [[UITableView alloc] initWithFrame:tableFrame
+                                             style:UITableViewStylePlain];
+    [taskTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+
+    // Create and configure the text field where new tasks will be typed
+    taskField = [[UITextField alloc] initWithFrame:fieldFrame];
+    [taskField setBorderStyle:UITextBorderStyleRoundedRect];
+    [taskField setPlaceholder:@"Type a task, tap Insert"];
+
+    // Create and configure a rounded rect Insert button
+    insertButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [insertButton setFrame:buttonFrame];
+
+    // Buttons behave using a target/action callback
+    // Configure the Insert button's action to call this object's -addTask: method
+    [insertButton addTarget:self
+                     action:@selector(addTask:)
+           forControlEvents:UIControlEventTouchUpInside];
+
+    // Give the button a title
+    [insertButton setTitle:@"Insert"
+                  forState:UIControlStateNormal];
+
+    // Add our three UI elements to the window
+    [[self window] addSubview:taskTable];
+    [[self window] addSubview:taskField];
+    [[self window] addSubview:insertButton];
+
+    // Finalize the window and put it on the screen
+    [[self window] setBackgroundColor:[UIColor whiteColor]];
+    [[self window] makeKeyAndVisible];
+
+    return YES;
+}
+    
+        
+        
+    
     return YES;
 }
 
