@@ -39,6 +39,14 @@ NSString *docPath()
         tasks = [[NSMutableArray alloc] init];
     }
     
+    if ([tasks count] == 0) {
+        // Put some strings in it
+        [tasks addObject:@"Walk the dogs"];
+        [tasks addObject:@"Feed the hogs"];
+        [tasks addObject:@"Chop the logs"];
+    }
+
+    
  // Create and configure the UIWindow instance
     // A CGRect is a struct with an origin (x,y) and size (width,height)
     CGRect windowFrame = [[UIScreen mainScreen] bounds];
@@ -84,6 +92,18 @@ NSString *docPath()
     // Finalize the window and put it on the screen
     [[self window] setBackgroundColor:[UIColor whiteColor]];
     [[self window] makeKeyAndVisible];
+    
+    // Create and configure the table view
+	taskTable = [[UITableView alloc] initWithFrame:tableFrame
+                                         style:UITableViewStylePlain];
+	[taskTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+
+	// Make this object the table view's dataSource
+	[taskTable setDataSource:self];
+
+	// Create and configure the text field where new tasks will be typed
+	taskField = [[UITextField alloc] initWithFrame:fieldFrame];
+	
 
     return YES;
 }
@@ -98,6 +118,7 @@ NSString *docPath()
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [tasks writeToFile:docPath() atomically:YES];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -113,6 +134,61 @@ NSString *docPath()
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [tasks writeToFile:docPath() atomically:YES];
 }
 
+#pragma mark - Table View management
+
+- (NSInteger)tableView:(UITableView *)tableView
+ numberOfRowsInSection:(NSInteger)section
+{
+    // Because this table view only has one section,
+    // the number of rows in it is equal to the number
+    // of items in our tasks array
+    return [tasks count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // To improve performance, we reconfigure cells in memory
+    // that have scrolled off the screen and hand them back
+    // with new contents instead of always creating new cells.
+    // First, we check to see if there's a cell available for reuse.
+    UITableViewCell *c = [taskTable dequeueReusableCellWithIdentifier:@"Cell"];
+
+    if (!c) {
+        // ...and only allocate a new cell if none are available
+        c = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                   reuseIdentifier:@"Cell"];
+    }
+
+    // Then we (re)configure the cell based on the model object,
+    // in this case our todoItems array
+    NSString *item = [tasks objectAtIndex:[indexPath row]];
+    [[c textLabel] setText:item];
+
+    // and hand back to the table view the properly configured cell
+    return c;
+}
+
+- (void)addTask:(id)sender
+{
+    // Get the to-do item
+    NSString *t = [taskField text];
+
+    // Quit here if taskField is empty
+    if ([t isEqualToString:@""]) {
+        return;
+    }
+
+    // Add it to our working array
+    [tasks addObject:t];
+    // Refresh the table so that the new item shows up
+    [taskTable reloadData];
+    // And clear out the text field
+    [taskField setText:@""];
+    // Dismiss the keyboard
+    [taskField resignFirstResponder];
+}
 @end
