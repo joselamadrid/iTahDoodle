@@ -21,13 +21,24 @@ NSString *docPath()
     [_window release];
     [super dealloc];
 }
-
+#pragma mark - Application delegate callbacks
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+  // Attempt to load an existing to-do dataset from an array stored to disk.
+    NSArray *plist = [NSArray arrayWithContentsOfFile:docPath()];
+    if (plist) {
+        // If there was a dataset available, copy it into our instance variable.
+        tasks = [plist mutableCopy];
+    } else {
+        // Otherwise, just create an empty one to get us started.
+        tasks = [[NSMutableArray alloc] init];
+    }
+    
     return YES;
 }
 
