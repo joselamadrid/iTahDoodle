@@ -61,7 +61,7 @@ NSString *docPath()
 
     // Create and configure the table view
     
- taskTable = [[UITableView alloc] initWithFrame:tableFrame
+	taskTable = [[UITableView alloc] initWithFrame:tableFrame
                                              style:UITableViewStylePlain];
     [taskTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
@@ -93,24 +93,11 @@ NSString *docPath()
     [[self window] setBackgroundColor:[UIColor whiteColor]];
     [[self window] makeKeyAndVisible];
     
-    // Create and configure the table view
-	taskTable = [[UITableView alloc] initWithFrame:tableFrame
-                                         style:UITableViewStylePlain];
 	[taskTable setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
 	// Make this object the table view's dataSource
-	[taskTable setDataSource:self];
+	[taskTable setDataSource:self];	
 
-	// Create and configure the text field where new tasks will be typed
-	taskField = [[UITextField alloc] initWithFrame:fieldFrame];
-	
-
-    return YES;
-}
-    
-        
-        
-    
     return YES;
 }
 
